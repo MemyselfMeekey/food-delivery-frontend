@@ -1,22 +1,36 @@
 import { Button, Col, Container, Form, Row,Modal } from "react-bootstrap"
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup"
 
 const RegisterComponent = () => {
+    const navigate=useNavigate()
+    const registerSchema=Yup.object({
+        name:Yup.string().min(5).max(50).required(),
+        email:Yup.string().email().required(),
+        role:Yup.string().matches(/^(customer)$/).required(),
+        phone:Yup.string().nullable().optional().default(null)
+    })
+
+
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const {handleSubmit,register,setValue,setError,formState:{errors}}=useForm()
+
     return (
         <>
             <div className="container">
                 <div className="row">
-                    <div className="col mx-4" style={{fontFamily:"sans-serif", fontSize:"20px"}}>
-                        <div style={{color:"tomato", marginTop:"50%" }}>
+                    <div className="col mx-4" style={{fontFamily:"sans-serif", fontSize:"30px", }}>
+                        <div style={{color:"tomato", marginTop:"50%", fontSize:"50px"}}>
                         Bhokmandu<br/>
                         </div>
                         
                     
-                        <small><em>Eating is the way</em></small>
+                        <small style={{textDecoration:"underline"}}><em>Eating is the way</em></small>
                     </div>
                     <div className="col" style={{border:"1px solid",marginTop:"14%",borderRadius:"15px", padding:"5px 5px 5px 10px"}} >
                        <h1 className="text-center">Register</h1>
@@ -70,20 +84,21 @@ const RegisterComponent = () => {
                         <Modal show={show} onHide={handleClose} className="text-center">
                                         <Modal.Header closeButton className="text-center">
                                             <h1 className="text-center">Login</h1>
-                                        </Modal.Header>
+                                       `` </Modal.Header>
                                         <Modal.Body>
                                             <Form>
                                                 <Form.Group className="row mb-3">
                                                     <Form.Label className="col-sm-3" htmlFor="email">Username:</Form.Label>
                                                     <Col sm={9}>
                                                         <Form.Control
-                                                            size:sm
+                                                            size="sm"
                                                             placeholder="Enter your email"
                                                             id="email"
-                                                            name="email"
+                                                            {...register('email',{required:true})}
+                                                            // name="email"
                                                         />
                                                         <span className="text-danger">
-
+                                                                {errors?.name?.message}
                                                         </span>
                                                     </Col>
                                                 </Form.Group>
@@ -91,10 +106,10 @@ const RegisterComponent = () => {
                                                     <Form.Label className="col-sm-3" htmlFor="password">Password:</Form.Label>
                                                     <Col sm={9}>
                                                         <Form.Control
-                                                            size:sm
+                                                            size="sm"
                                                             placeholder="Enter your password"
                                                             id="password"
-                                                            name="password"
+                                                           {...register('password',{required:true})}
                                                         />
                                                         <span className="text-danger">
 
@@ -103,11 +118,11 @@ const RegisterComponent = () => {
                                                 </Form.Group>
                                                 <Form.Group className="row mb-3">
                                                     <Col >
-                                                        <NavLink to={'/forgetpassword'} className={"btn btn-info"}>ForgetPassword</NavLink>     
+                                                        <NavLink to={'/forgetpassword'} className={"btn btn-info"}>Forget Password</NavLink>     
                                                         
                                                     </Col>
                                                     <Col>
-                                                    <NavLink to={'/'} className={"btn btn-success"}>Login</NavLink>  
+                                                    <NavLink to='/' className={"btn btn-success"}>Login</NavLink>  
                                                     </Col>
                                                     
                                                 </Form.Group>

@@ -1,0 +1,8 @@
+.btn-custom {
+    transition: none; /* Remove hover transition */
+  }
+  
+  .btn-custom:hover {
+    background-color: initial; /* Remove hover background color */
+    color: initial; /* Remove hover text color */
+  }

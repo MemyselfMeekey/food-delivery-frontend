@@ -37,7 +37,6 @@ const LandingPage=()=>{
     useEffect(()=>{
         handleFunction()
     },[])
-    console.log(menuList)
     return(
         <>
         <HomeSlider/>

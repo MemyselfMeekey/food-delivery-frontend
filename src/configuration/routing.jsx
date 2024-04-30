@@ -3,6 +3,7 @@ import { Container,Row,Col } from "react-bootstrap"
 import LandingPage from "../components/pages/landing-page/landing.page"
 import MainLayout from "../components/pages/layout/main-Layout"
 import RegisterComponent from "../components/pages/auth/register.page"
+import VerifyOtp from "../components/pages/auth/verify-otp"
 
 
 const ErrorPage=()=>{
@@ -31,7 +32,7 @@ const RouterComponent=()=>{
                     
                     </Route>
                     <Route path="/register" element={<RegisterComponent/>}></Route>
-                   
+                    <Route path="/verify-otp" element={<VerifyOtp/>}></Route>
                     <Route path="*" element={<ErrorPage/>}></Route>
                 </Routes>
             </BrowserRouter>
