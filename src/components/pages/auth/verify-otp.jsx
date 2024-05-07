@@ -24,15 +24,16 @@ const VerifyOtp = () => {
             }
           
             const response = await AuthSvc.otpRequest(newData)
-            
-            toast.success("Successufully logged in")
+            toast.success(response.message)
+            navigate("/"+response.result.userDetail.role)
+
         }
         catch (exception) {
-            toast.warn(exception.message)
+            toast.warn(response.message)
             console.log("exception", exception)
         }
     };
-
+    console.log(errors)
     return (
         <Container className="text-center">
             <Row className="justify-content-center">

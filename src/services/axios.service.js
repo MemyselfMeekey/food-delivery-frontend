@@ -23,6 +23,7 @@ class HttpServer{
         //This is an api caller
         postRequest=async(url,data={},config=null)=>{
             try{
+              
                 this.setHeaders(config)
                
                 const response=await axiosInstance.post(
@@ -43,6 +44,8 @@ class HttpServer{
         }
         getRequest=async(url,config=null)=>{
             try{
+           
+              
                 this.setHeaders(config)
                
                 const response=await axiosInstance.get(
