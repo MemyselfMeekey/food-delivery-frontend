@@ -30,7 +30,7 @@ const BannerMain = () => {
     }
 
     useEffect(() => {
-        getBannerList(({limit:1,page:1}))
+        getBannerList({limit:1,page:1})
     })
    
     return (

@@ -29,7 +29,7 @@ const VerifyOtp = () => {
 
         }
         catch (exception) {
-            toast.warn(response.message)
+            toast.warn(exception.message)
             console.log("exception", exception)
         }
     };

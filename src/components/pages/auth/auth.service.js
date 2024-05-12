@@ -7,7 +7,6 @@ class AuthService extends HttpServer{
                 'auth/login',
                 data
             )
-         
         //    console.log(response.data.result.userWithotp)
             localStorage.setItem("_usr",response.result.userWithotp.email)
             return response
