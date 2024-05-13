@@ -13,6 +13,7 @@ import AuthComponent from "../components/auth/auth.component"
 import AdminMain from "../components/pages/admin/admin-main"
 
 import { BannerCreate,BannerMain } from "../components/pages/admin/banner"
+import { CategoryMain, CreateCategory } from "../components/pages/admin/category"
 
 const ErrorPage=()=>{
     return(
@@ -40,9 +41,10 @@ const RouterComponent=()=>{
                     <Route index element={<LandingPage/>}></Route>
                     <Route path="activation/:token" element={<ActivateRegistration/>}></Route>
                     <Route path="resendverifcation" element={<ResendVerificationToken/>}></Route>
+                    <Route path="/verify-otp" element={<VerifyOtp/>}></Route>
                     </Route>
                     <Route path="/register" element={<RegisterComponent/>}></Route>
-                    <Route path="/verify-otp" element={<VerifyOtp/>}></Route>
+                    
                     <Route path="*" element={<ErrorPage/>}></Route>
                     
 
@@ -52,10 +54,12 @@ const RouterComponent=()=>{
                         <Route index element={<AdminMain/>}></Route>
                         <Route path="/admin/banner" element={<BannerMain/>}></Route>
                         <Route path="/admin/banner/create" element={<BannerCreate/>}></Route>
+
+                        <Route path="/admin/category" element={<CategoryMain/>}></Route>
+                        <Route path="/admin/category/create" element={<CreateCategory/>}></Route>
+                    
+                    
                     </Route>
-
-
-                 
                 </Routes>
             </BrowserRouter>
             

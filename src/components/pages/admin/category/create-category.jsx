@@ -1,65 +1,97 @@
 import { Col, Form, Row } from "react-bootstrap"
 import AdminBreadCrumb from "../admin-breadcrumb"
 import AdminNavBar from "../admin.navbar"
-import { SelectionButton, TextInput } from "../../../cms/form/input-component"
+import { SelectionButton, SwitchCase, TextInput } from "../../../cms/form/input-component"
 import { useForm } from "react-hook-form"
 import { FormActionButtons } from "../../../cms/form/form-action-buttons"
 import * as Yup from "yup"
-import BannerSvc from "./bannerSvc"
+import CategorySvc from "./category.service"
 import { toast } from "react-toastify"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 
-const BannerCreate = () => {
+const CategoryCreate = () => {
     const navigate=useNavigate()
 
     const [loading,setLoading]=useState(false)
 
-    const BannerRule=Yup.object({
+    const [listofCat,setCategoryOptions]=useState()
+
+    const CategoryRule=Yup.object({
         title:Yup.string().min(3).required(),
         status:Yup.object({
             label:Yup.string().matches(/^(Publish|Unpublish)$/).required(),
             value:Yup.string().matches(/^(active|inactive)$/).required()
         }).required(),
-        url:Yup.string().url().nullable().optional()
+       showInHome:Yup.boolean().default(false),
+       parentId:Yup.object({
+        label:Yup.string().nullable().optional(),
+        value:Yup.string().nullable().optional()
+       })
     
     })
 
 
     const { formState: { errors },setValue,setError, control,handleSubmit } = useForm({
-        resolver:yupResolver(BannerRule)
+        resolver:yupResolver(CategoryRule)
     })
 
-    const submitBannerCreate=async(data)=>{
+    const submitCategoryCreate=async(data)=>{
         try{
+            console.log("I am hre")
             setLoading(true)
+            console.log("catdata",data)
             let payload=data
             payload.status=data.status.value
-            const status=await BannerSvc.bannerCreate(payload)
+            const status=await CategorySvc.categoryCreate(payload)
             toast.success(status.message)
-            navigate("/admin/banner")
+            navigate("/admin/category")
         }
         catch(exception){
-            toast.warn("Banner couldnot be created")
+            toast.warn("Category couldnot be created")
             console.log (exception)
         }
         finally{
             setLoading(false)
         }
     }
+
+    const LoadCategories=async()=>{
+        try{
+            
+            const response=await CategorySvc.listAll({page:1,limit:100})
+           
+            const options=response.result.map((cat)=>{
+                return{
+                    label:cat.name,
+                    value:cat.id
+                }
+            })
+            setCategoryOptions(options)
+        }
+        catch(exception){
+            console.log("Cannot fetch categories")
+            toast.warn(exception.message)
+        }
+    }
+
+    useEffect(()=>{
+        LoadCategories()
+    },[])
+
     return (
         <>
             <div className="content">
                 <AdminNavBar />
                 <div className="container-fluid px-4">
                     <AdminBreadCrumb
-                        pageTitle={"Banner Create"}
+                        pageTitle={"Category Create"}
                         breadCrumbData={[
                             { label: "Dashboard", url: "/admin" },
-                            { label: "ListBanner", url: "/admin/banner" },
-                            { label: "Create Banner", url: null }
+                            { label: "List Category", url: "/admin/Category" },
+                            { label: "Create Category", url: null }
                         ]}
 
                     />
@@ -67,37 +99,59 @@ const BannerCreate = () => {
                         <div className="col-12">
                             <br />
                             <hr />
-                            <Form onSubmit={handleSubmit(submitBannerCreate)}>
+                            <Form onSubmit={handleSubmit(submitCategoryCreate)}>
                                 <Form.Group as={Row} className="mx-3 mb-3" >
-                                    <Form.Label className="col-sm-3" htmlFor="bannertitle">
-                                        Banner Title:
+                                    <Form.Label className="col-sm-3" htmlFor="categorytitle">
+                                        Category Title:
                                     </Form.Label>
                                     <Col sm={9}>
                                         <TextInput
-                                            name={"title"}
-                                            placeholder="Enter Banner title"
-                                            errMsg={errors?.title?.message}
+                                            name={"name"}
+                                            placeholder="Enter Category title"
+                                            errMsg={errors?.name?.message}
                                             defaultValue=""
                                             control={control}
                                         />
                                     </Col>
                                     <hr />
-                                    <Form.Label className="col-sm-3" htmlFor="bannerUrl">
-                                        Banner Url:
+
+                                    <Form.Label className="col-sm-3" htmlFor="sub-categoryof">
+                                      Sub-Category Of:
+                                    </Form.Label>
+                                    <Col sm={9}>
+                                        {listofCat && listofCat>0 && (
+                                            <SelectionButton
+                                            name={"parentId"}
+                                            control={control}
+                                            options={listofCat}
+                                            multiple={false}
+                                            errMsg={errors?.parentId?.message}
+                                        />
+                                        )}
+                                    <SelectionButton
+                                            name={"parentId"}
+                                            control={control}
+                                            options={listofCat}
+                                            multiple={false}
+                                            errMsg={errors?.parentId?.message}
+                                        />
+                                    </Col>
+                                    <hr />
+                                    <Form.Label className="col-sm-3" htmlFor="showInHome">
+                                        Show In Home:
                                     </Form.Label>
                                     <Col sm={9} >
-                                        <TextInput
-                                            name={"url"}
-                                            type="url"
-                                            placeholder="Enter Banner Url"
-                                            errMsg={errors?.url?.message}
-                                            defaultValue=""
-                                            control={control}
-                                        />
+                                    <SwitchCase
+                                        name="showInHome"
+                                        control={control}
+                                        defaultValue={false}
+                                        errMsg={errors?.showInHome?.message}
+                                    />
                                     </Col>
+
                                     <hr />
-                                    <Form.Label className="col-sm-3" htmlFor="bannerstatus">
-                                        Banner Status:
+                                    <Form.Label className="col-sm-3" htmlFor="categoryStatus">
+                                        Category Status:
                                     </Form.Label>
                                     <Col sm={9} >
                                         <SelectionButton
@@ -112,8 +166,8 @@ const BannerCreate = () => {
                                         />
                                     </Col>
                                     <hr />
-                                    <Form.Label className="col-sm-3" htmlFor="bannerimage">
-                                        Banner Image:
+                                    <Form.Label className="col-sm-3" htmlFor="categoryImage">
+                                        Category Image:
                                     </Form.Label>
                                     <Col sm={9}>
                                         <Form.Control
@@ -157,4 +211,4 @@ const BannerCreate = () => {
         </>
     )
 }
-export default BannerCreate
+export default CategoryCreate

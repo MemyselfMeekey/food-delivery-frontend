@@ -23,7 +23,7 @@ const AdminBreadCrumb = ({ pageTitle, breadCrumbData, actionUrl = null, buttonLa
                 <Col sm={12} md={6}>
                     {
                         actionUrl && <>
-                            <NavLink className={'btn btn-sm btn-success mt-5 mb-2 float-end'} to="/admin/banner/create"><i className="fa fa-plus"></i> {buttonLabel}
+                            <NavLink className={'btn btn-sm btn-success mt-5 mb-2 float-end'} to={`/admin${actionUrl}`}><i className="fa fa-plus"></i> {buttonLabel}
                             </NavLink>
                         </>
                     }
