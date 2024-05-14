@@ -30,7 +30,7 @@ export const TextInput = ({ type = 'text', name, defaultValue = "", id = "text",
     )
 }
 
-export const SelectionButton=({name,id="select",options=[],defaultValue="",errMsg=null,control,multiple=false})=>{
+export const SelectionButton=({name,id="select",options=[],defaultValue=null,errMsg=null,control,multiple=false})=>{
     const {field}=useController({
         name:name,
         control:control,
@@ -43,6 +43,7 @@ export const SelectionButton=({name,id="select",options=[],defaultValue="",errMs
             options={options}
             id={id}
             isMulti={multiple}
+            isClearable={true}
         />
         <span className="text-danger">
             {errMsg}
@@ -71,8 +72,9 @@ export const SwitchCase=({name,control,defaultValue=false,id="switchcase",errMsg
                 label={"Yes"}
                 onChange={(e)=>{
                     const isChecked=e.target.checked
+                    
                     setChecked(isChecked)
-                    field.onChange(checked)
+                    field.onChange(isChecked)
                 }}
             />
             <span className="text-danger">
