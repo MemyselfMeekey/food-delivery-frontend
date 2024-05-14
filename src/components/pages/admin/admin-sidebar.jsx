@@ -25,29 +25,32 @@ const AdminSidebar = () => {
                         <span>Banner Management</span>
                     </a>
                 </li>
+
                 <li className="nav-item" style={{fontSize:"18px"}}>
-                    <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                    <a className="nav-link collapsed" href="/admin/category" data-toggle="collapse" data-target="#collapseUtilities"
+                        aria-expanded="true" aria-controls="collapseUtilities">
+                        <i className="fa-solid fa-list"></i>
+                        <span>Category Management</span>
+                    </a>
+                </li>
+
+                <li className="nav-item" style={{fontSize:"18px"}}>
+                    <a className="nav-link collapsed" href="/admin/menu" data-toggle="collapse" data-target="#collapseUtilities"
                         aria-expanded="true" aria-controls="collapseUtilities">
                         <i className="fa-solid fa-bowl-food"></i>
                         <span>Menu Management</span>
                     </a>
                 </li>
                 <li className="nav-item" style={{fontSize:"18px"}}>
-                    <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                    <a className="nav-link collapsed" href="/admin/offer" data-toggle="collapse" data-target="#collapseUtilities"
                         aria-expanded="true" aria-controls="collapseUtilities">
                         <i className="fas fa-fw fa-wrench"></i>
                         <span>Offer Management</span>
                     </a>
                 </li>
+                
                 <li className="nav-item" style={{fontSize:"18px"}}>
-                    <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                        aria-expanded="true" aria-controls="collapseUtilities">
-                        <i className="fa-solid fa-list"></i>
-                        <span>Category Management</span>
-                    </a>
-                </li>
-                <li className="nav-item" style={{fontSize:"18px"}}>
-                    <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                    <a className="nav-link collapsed" href="/admin/order" data-toggle="collapse" data-target="#collapseUtilities"
                         aria-expanded="true" aria-controls="collapseUtilities">
                         <i className="fa-brands fa-first-order"></i>
                         <span>Order Management</span>

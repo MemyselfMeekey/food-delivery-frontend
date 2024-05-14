@@ -57,7 +57,7 @@ const AdminMain = () => {
                     </div>
 
                 </div>
-                <div className="row my-3 mx-3">
+                {/* <div className="row my-3 mx-3">
                     <div className="col-12 ">
                         <h4><ins>New Orders</ins></h4>
                         <hr></hr>
@@ -73,7 +73,7 @@ const AdminMain = () => {
                             </thead>
                         </table>
                     </div>
-                </div>
+                </div> */}
             </div>
         </>
     )

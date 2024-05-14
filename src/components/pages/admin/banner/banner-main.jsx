@@ -1,27 +1,42 @@
-import { NavLink } from "react-router-dom"
+
 import AdminBreadCrumb from "../admin-breadcrumb"
 import AdminNavBar from "../admin.navbar"
 import { useEffect, useState } from "react"
+import {Image,Row,Col,Pagination} from "react-bootstrap"
 import BannerSvc from "./bannerSvc"
 import LoadingComponent from "../../../loading/loading-component"
 import { toast } from "react-toastify"
+import React from "react"
+
 
 const BannerMain = () => {
     const [data, setData] = useState()
     const [loading, setLoading] = useState(true)
+    const [pagination,setPagination]=useState({
+        page:1,
+        limit:15,
+        count:10
+    })
 
-    const getBannerList = async ({limit=10,page=1}) => {
-        console.log("i m hr1")
+    const getBannerList = async ({ limit = 10, page = 1 }) => {
+
         try {
-            
-            setLoading(true)
-            const bannerList = await BannerSvc.listBanner({limit:limit,page:page})
 
+            setLoading(true)
+            const bannerList = await BannerSvc.listBanner({ limit: limit, page: page })
+            
             setData(bannerList.result)
+            const totalPages = Math.ceil(bannerList.meta.count / bannerList.meta.limit)
+            setPagination({
+                page: +bannerList.meta.page,
+                limit: +bannerList.meta.limit,
+                count: totalPages,
+            })
+
 
         }
         catch (exception) {
-            console.log("exception in getbannerlist",exception)
+            console.log("exception in getbannerlist", exception)
             toast.warning("Error loading banner data .....")
         }
         finally {
@@ -30,9 +45,9 @@ const BannerMain = () => {
     }
 
     useEffect(() => {
-        getBannerList({limit:1,page:1})
+        getBannerList({ limit: 1, page: 1 })
     })
-   
+
     return (
         <>
 
@@ -82,9 +97,9 @@ const BannerMain = () => {
                                         </tr>
                                     </> : <>
                                         {
-                                            
+
                                             data && data.map((banners, ind) => (
-                                                
+
                                                 <tr key={ind}>
                                                     <td>{banners.title}</td>
                                                     <td>{banners.url}</td>
@@ -104,6 +119,53 @@ const BannerMain = () => {
                                 }
                             </tbody>
                         </table>
+                        {
+                            loading ? <></> : <>
+                                <Row>
+                                    <Col sm={12} >
+                                        <Pagination className="float-end" size="sm">
+                                            <Pagination.First disabled={pagination.page === 1 ? true : false} onClick={(e) => {
+
+                                                getBannerList({ limit: 151, page: 1 })
+                                            }} />
+                                            <Pagination.Prev disabled={pagination.page === 1 ? true : false} onClick={(e) => {
+
+                                                getBannerList({ limit: 15, page: (pagination.page - 1) })
+                                            }} />
+                                            {
+                                                [...Array(pagination.totalPages)].map((item, inx) => (
+                                                    <React.Fragment key={inx}>
+
+
+
+
+                                                        <Pagination.Item onClick={(e) => {
+
+                                                            getBannerList({ limit: 15, page: inx + 1 })
+                                                        }} key={inx}>{inx + 1}</Pagination.Item>
+
+                                                    </React.Fragment>
+                                                ))
+                                            }
+
+                                            <Pagination.Next disabled={
+                                                (pagination.page === 1 && pagination.count > 1)
+                                                    || pagination.count !== pagination.page ? false : true} onClick={(e) => {
+
+                                                        getBannerList({ limit: 15, page: (pagination.page + 1) })
+                                                    }} />
+                                            <Pagination.Last disabled={(pagination.page === 1 && pagination.count > 1) || pagination.count !== pagination.page ? false : true} onClick={(e) => {
+
+                                                getBannerList({ limit: 15, page: (pagination.count) })
+                                            }} />
+
+                                        </Pagination>;
+                                    </Col>
+                                </Row>
+                            </>
+
+                        }
+
                     </div>
                 </div>
             </div>

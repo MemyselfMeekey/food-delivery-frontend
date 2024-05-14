@@ -1,10 +1,12 @@
 import HttpServer from "../../../../services/axios.service";
 
-class BannerService extends HttpServer{
-     bannerCreate=async(data)=>{
+
+class CategoryService extends HttpServer{
+    categoryCreate=async(data)=>{
         try{
+            console.log("I am being submitted")
             const response=await this.postRequest(
-                'banner',
+                '/category',
                 data,
                 {
                     auth:true,file:true
@@ -16,22 +18,20 @@ class BannerService extends HttpServer{
             throw exception
         }
     }
-    listBanner=async({limit,page})=>{
+    listAll=async({limit,page})=>{
         try{
-    
             const response=await this.getRequest(
-                `banner?limit=${limit}&page=${page}`,
-                
-                {
-                    auth:true
-                }
-            ) 
+                `/category?limit=${limit}&page=${page}`,
+                {auth:true}
+            )
             return response
+            
         }
         catch(exception){
             throw exception
         }
+
     }
 }
-const BannerSvc=new BannerService()
-export default BannerSvc
+const CategorySvc=new CategoryService()
+export default CategorySvc

@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react"
 import { Form, InputGroup } from "react-bootstrap"
-import { Controller, useController } from "react-hook-form"
+import { Controller, set, useController } from "react-hook-form"
 
 import Select from "react-select"
 
@@ -29,10 +30,11 @@ export const TextInput = ({ type = 'text', name, defaultValue = "", id = "text",
     )
 }
 
-export const SelectionButton=({name,id="select",options=[],errMsg=null,control,multiple=false})=>{
+export const SelectionButton=({name,id="select",options=[],defaultValue="",errMsg=null,control,multiple=false})=>{
     const {field}=useController({
         name:name,
-        control:control
+        control:control,
+        defaultValue:defaultValue
     })
     return(
         <>
@@ -45,6 +47,37 @@ export const SelectionButton=({name,id="select",options=[],errMsg=null,control,m
         <span className="text-danger">
             {errMsg}
         </span>
+        </>
+    )
+}
+
+export const SwitchCase=({name,control,defaultValue=false,id="switchcase",errMsg=""})=>{
+    const {field}=useController({
+        name:name,
+        control:control
+    })
+    const [checked,setChecked]=useState()
+
+    useEffect(()=>{
+        setChecked(defaultValue)
+    },[defaultValue])
+
+    return(
+        <>
+            <Form.Check
+                type="switch"
+                defaultChecked={checked}
+                id={id}
+                label={"Yes"}
+                onChange={(e)=>{
+                    const isChecked=e.target.checked
+                    setChecked(isChecked)
+                    field.onChange(checked)
+                }}
+            />
+            <span className="text-danger">
+                {errMsg}
+            </span>
         </>
     )
 }
