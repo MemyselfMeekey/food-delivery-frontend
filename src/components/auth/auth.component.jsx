@@ -42,9 +42,7 @@ const AuthComponent=({role,children})=>{
     if(loading){
         return(
             <>
-            {
-                console.log(" I am hre")
-            }
+           
                 <Container>
                     <Row>
                         <Col sm={12} className="my-5 text-center">
@@ -56,7 +54,7 @@ const AuthComponent=({role,children})=>{
         )
     }
     else if(userDetail && userDetail.role===role){
-        console.log("I am here")
+    
         return children
     }
     else{

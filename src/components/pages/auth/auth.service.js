@@ -100,6 +100,73 @@ class AuthService extends HttpServer{
             throw exception
         }
     }
+    changePassword=async(data)=>{
+        try{
+            const response=await this.postRequest(
+                'auth/change-pass',
+                data,
+                {auth:true}
+
+            )
+            return response
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+
+    forgetPass=async(data)=>{
+       try{
+        const response=await this.postRequest(
+            'auth/forgetpass',
+            data
+        )
+        return response
+       }
+       catch(exception){
+        throw exception
+       }
+    }
+
+    forgetPassTokenVerify=async(token)=>{
+        try{
+            const response=await this.postRequest(
+                `auth/forgetpass/${token}/verification`,
+            )
+            return response
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+
+    setForgetPass=async(data,token)=>{
+        try{
+            const response=await this.postRequest(
+                'auth/setpass/'+token,
+                data
+            )
+            return response
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+
+    logout=async()=>{
+        try{
+            const response=await this.postRequest(
+                'auth/logout',
+                {auth:true}
+            )
+            return response
+        }
+        catch(exception){
+            throw exception
+        } 
+    }
+
+
 }
 const AuthSvc=new AuthService()
 export default AuthSvc

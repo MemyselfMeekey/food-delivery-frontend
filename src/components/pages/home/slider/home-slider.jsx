@@ -1,6 +1,6 @@
-import Banner1 from "../../../../assets/images/Banner1.jpeg"
-import Banner2 from "../../../../assets/images/Banner2.png"
-import Banner5 from "../../../../assets/images/Banner5.jpeg"
+import daraz1 from "../../../../assets/images/daraz1.jpg"
+import daraz2 from "../../../../assets/images/daraz2.png"
+import daraz3 from "../../../../assets/images/daraz3.jpg"
 import "./home-slider.css"
 const HomeSlider = () => {
     return (
@@ -13,13 +13,13 @@ const HomeSlider = () => {
                 </div>
                 <div className="carousel-inner mx-2 w-100">
                     <div className="carousel-item active c-item">
-                        <img src={Banner1} style={{maxWidth:"100", height:"auto",maxHeight:"100%"}} />
+                        <img src={daraz1} style={{maxWidth:"100", height:"auto",maxHeight:"100%"}} />
                     </div>
                     <div className="carousel-item c-item">
-                        <img src={Banner2} className="d-block img-fluid c-img"  />
+                        <img src={daraz2} className="d-block img-fluid c-img"  />
                     </div>
                     <div className="carousel-item c-item">
-                        <img src={Banner5} className="d-block c-img" />
+                        <img src={daraz3} className="d-block c-img" />
                     </div>
                 </div>
                 <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">

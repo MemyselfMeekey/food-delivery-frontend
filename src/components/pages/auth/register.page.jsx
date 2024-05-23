@@ -222,7 +222,7 @@ const RegisterComponent = () => {
                                     </Form.Group>
                                     <Form.Group className="row mb-3">
                                         <Col >
-                                            <NavLink to={'/forgetpassword'} className={"btn btn-info"}>Forget Password</NavLink>
+                                            <NavLink to={'/forgetpass'} className={"btn btn-info"}>Forget Password</NavLink>
 
                                         </Col>
                                         <Col>

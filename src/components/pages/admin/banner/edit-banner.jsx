@@ -1,66 +1,99 @@
-import { Col, Form, Row } from "react-bootstrap"
-import AdminBreadCrumb from "../admin-breadcrumb"
-import AdminNavBar from "../admin.navbar"
-import { SelectionButton, TextInput } from "../../../cms/form/input-component"
-import { useForm } from "react-hook-form"
-import { FormActionButtons } from "../../../cms/form/form-action-buttons"
-import * as Yup from "yup"
+import { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import BannerSvc from "./bannerSvc"
-import { toast } from "react-toastify"
+import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import * as Yup from "yup"
+import AdminNavBar from "../admin.navbar"
+import AdminBreadCrumb from "../admin-breadcrumb"
+import { Form,Row,Col } from "react-bootstrap"
+import { SelectionButton, TextInput } from "../../../cms/form/input-component"
+import { FormActionButtons } from "../../../cms/form/form-action-buttons"
+import { toast } from "react-toastify"
 
-
-const BannerCreate = () => {
+const EditBanner=()=>{
     const navigate=useNavigate()
-
+    const params=useParams()    
     const [loading,setLoading]=useState(false)
 
-    const BannerRule=Yup.object({
+    const rules=Yup.object({
         title:Yup.string().min(3).required(),
         status:Yup.object({
             label:Yup.string().matches(/^(Publish|Unpublish)$/).required(),
             value:Yup.string().matches(/^(active|inactive)$/).required()
         }).required(),
         url:Yup.string().url().nullable().optional()
-    
     })
 
 
-    const { formState: { errors },setValue,setError, control,handleSubmit } = useForm({
-        resolver:yupResolver(BannerRule)
+    const {control,formState:errors,handleSubmit,setValue}=useForm({
+        resolver:yupResolver(rules)
     })
 
-    const submitBannerCreate=async(data)=>{
+
+
+
+    const getBannerDetail=async()=>{
+
         try{
+            const response=await BannerSvc.getDataById(params.id)
+            console.log("response",response)
+            if(response.result){
+                setValue('title',response.result.title)
+                setValue('status',{
+                    label:response.result.status==='active'?'Publish':"UnPublish",
+                    value:response.result.status
+                })
+            }
+            setValue("url",response.result.url)
+            setValue("image",response.result.image)
+
+        }
+        catch(exception){
+            toast.warn(exception.message)
+            navigate('/admin/banner')
+        }
+    }
+
+    useEffect(()=>{
+        getBannerDetail()
+    },)
+
+    const submitBannerEdit=async(data)=>{
+        try{    
             setLoading(true)
             console.log(data)
             let payload=data
             payload.status=data.status.value
-            const status=await BannerSvc.bannerCreate(payload)
+            const status=await BannerSvc.update(payload,params.id)
             toast.success(status.message)
-            navigate("/admin/banner")
+            navigate('/admin/banner')
+
         }
         catch(exception){
-            toast.warn("Banner couldnot be created")
-            console.log (exception)
+            toast.warn(exception.message)
+            console.log("exception",exception)
         }
         finally{
             setLoading(false)
+
         }
+
     }
-    return (
+    console.log(errors)
+
+
+    return(
         <>
             <div className="content">
-                <AdminNavBar />
+                <AdminNavBar/>
                 <div className="container-fluid px-4">
                     <AdminBreadCrumb
-                        pageTitle={"Banner Create"}
+                        pageTitle={"Banner Edit"}
                         breadCrumbData={[
                             { label: "Dashboard", url: "/admin" },
                             { label: "ListBanner", url: "/admin/banner" },
-                            { label: "Create Banner", url: null }
+                            { label: "Edit Banner", url: null }
                         ]}
 
                     />
@@ -68,7 +101,7 @@ const BannerCreate = () => {
                         <div className="col-12">
                             <br />
                             <hr />
-                            <Form onSubmit={handleSubmit(submitBannerCreate)}>
+                            <Form onSubmit={handleSubmit(submitBannerEdit)}>
                                 <Form.Group as={Row} className="mx-3 mb-3" >
                                     <Form.Label className="col-sm-3" htmlFor="bannertitle">
                                         Banner Title:
@@ -117,30 +150,31 @@ const BannerCreate = () => {
                                         Banner Image:
                                     </Form.Label>
                                     <Col sm={9}>
-                                        <Form.Control
+                                    <Form.Control
                                             type="file"
                                             name="image"
                                             size="sm"
-                                            onChange={(e) => {
-                                                const image = e.target.files[0]
+                                           onChange={(e)=>{
+                                                const image=e.target.files[0]
                                                 //size and type
-                                                const ext = image.name.split(".").pop()
-                                                const allowed = ['jpg', 'png', 'svg', 'jpeg', 'webp', 'bmp']
-                                                if (allowed.includes(ext.toLowerCase())) {
-                                                    if (image.size <= 3000000) {
-                                                        //allowed sixze
-                                                        setValue("image", image)
-                                                    }
-                                                    else {
-                                                        setError("image", { message: "File size not allowed" })
-                                                    }
+                                                const ext=image.name.split(".").pop()
+                                                const allowed=['jpg','png','svg','jpeg','webp','bmp']
+                                                if(allowed.includes(ext.toLowerCase())){
+                                                        if(image.size<=3000000){
+                                                            //allowed sixze
+                                                            setValue("image",image)
+                                                        }
+                                                        else{
+                                                            setError("image", {message:"File size not allowed"})
+                                                        }
                                                 }
-                                                else {
-                                                    setError("image", { message: "File format not suported" })
+                                                else{
+                                                    setError("image", {message:"File format not suported"})
                                                 }
-
-                                            }}
+                                               
+                                           }}
                                         />
+                                              
                                         <span className="text-danger">{errors?.image?.message}</span>
                                     </Col>
 
@@ -158,4 +192,4 @@ const BannerCreate = () => {
         </>
     )
 }
-export default BannerCreate
+export default EditBanner

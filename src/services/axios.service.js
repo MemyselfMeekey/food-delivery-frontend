@@ -44,7 +44,7 @@ class HttpServer{
         }
         getRequest=async(url,config=null)=>{
             try{
-           
+                console.log("url",url)
               
                 this.setHeaders(config)
                
@@ -59,6 +59,47 @@ class HttpServer{
                 return response
             }
             
+            catch(exception){
+                throw exception
+            }
+        }
+        deleteRequest=async(url,config=null)=>{
+            try{
+           
+              
+                this.setHeaders(config)
+               
+                const response=await axiosInstance.delete(
+                    url,
+                    {
+                        headers:{
+                                ...this.#headers
+                        }
+                    }
+                )
+                return response
+            }
+            
+            catch(exception){
+                throw exception
+            }
+        }
+        putRequest=async(url,data={},config=null)=>{
+            try{
+                this.setHeaders(config)
+               
+                const response=await axiosInstance.put(
+                    url,
+                    data,
+                    {
+                        headers:{
+                                ...this.#headers
+                        }
+                    }
+                )
+                return response
+
+            }
             catch(exception){
                 throw exception
             }

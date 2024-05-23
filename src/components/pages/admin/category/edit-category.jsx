@@ -1,25 +1,23 @@
-import { Col, Form, Row } from "react-bootstrap"
-import AdminBreadCrumb from "../admin-breadcrumb"
-import AdminNavBar from "../admin.navbar"
-import { SelectionButton, SwitchCase, TextInput } from "../../../cms/form/input-component"
-import { useForm } from "react-hook-form"
-import { FormActionButtons } from "../../../cms/form/form-action-buttons"
-import * as Yup from "yup"
-import CategorySvc from "./category.service"
-import { toast } from "react-toastify"
-import { yupResolver } from "@hookform/resolvers/yup"
-import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as Yup from "yup"
+import AdminNavBar from "../admin.navbar"
+import AdminBreadCrumb from "../admin-breadcrumb"
+import { Form, Row, Col } from "react-bootstrap"
+import { SelectionButton, TextInput } from "../../../cms/form/input-component"
+import { FormActionButtons } from "../../../cms/form/form-action-buttons"
+import { toast } from "react-toastify"
+import CategorySvc from "./category.service"
 
+const EditCategory = () => {
+    const navigate = useNavigate()
+    const params = useParams()
+    const [loading, setLoading] = useState(false)
+    const [checked,setChecked]=useState(false)
 
-const CategoryCreate = () => {
-    const navigate=useNavigate()
-
-    const [loading,setLoading]=useState(false)
-
-    const [listofCat,setCategoryOptions]=useState()
-
-    const CategoryRule=Yup.object({
+    const rules = Yup.object({
         name:Yup.string().min(3).required(),
         status:Yup.object({
             label:Yup.string().matches(/^(Publish|Unpublish)$/).required(),
@@ -30,59 +28,73 @@ const CategoryCreate = () => {
         label:Yup.string().nullable().optional(),
         value:Yup.string().nullable().optional()
        })
-    
     })
 
 
-    const { formState: { errors },setValue,setError, control,handleSubmit } = useForm({
-        resolver:yupResolver(CategoryRule)
+    const { control, formState: errors, handleSubmit, setValue } = useForm({
+        resolver: yupResolver(rules)
     })
 
-    const submitCategoryCreate=async(data)=>{
-        try{
-         
-            setLoading(true)
-          
-            let payload=data
-            payload.status=data.status.value
-            payload.parentId=data.parentId?.value || null
-            
-            const status=await CategorySvc.categoryCreate(payload)
-            toast.success(status.message)
-            navigate("/admin/category")
-        }
-        catch(exception){
-            toast.warn("Category couldnot be created")
-            console.log (exception)
-        }
-        finally{
-            setLoading(false)
-        }
-    }
 
-    const LoadCategories=async()=>{
-        try{
-            
-            const response=await CategorySvc.listAll({page:1,limit:100})
-           
-            const options=response.result.map((cat)=>{
-                return{
-                    label:cat.name,
-                    value:cat._id
-                }
+
+
+    const getCategoryDetail = async () => {
+
+        try {
+            const response = await CategorySvc.getDataById(params.id)
+            console.log("response", response)
+            if (response.result) {
+            setValue('name', response.result.name)
+            setValue('status', {
+                    label: response.result.status === 'active' ? 'Publish' : "UnPublish",
+                    value: response.result.status
+                })
+                  setValue('showInHome',{
+                  label:response.result.showInHome==='true'?'Yes':'No',
+                  value:response.result.showInHome
             })
-            setCategoryOptions(options)
+            setValue('parentId',{
+            label:response.result.parentId.name,
+            value:response.result.parentId._id
+            })
+            }
+          
+            setValue("image", response.result.image)
+
         }
-        catch(exception){
-            console.log("Cannot fetch categories")
+        catch (exception) {
             toast.warn(exception.message)
+            navigate('/admin/category')
         }
     }
 
-    useEffect(()=>{
-        LoadCategories()
-    },[])
+    useEffect(() => {
+        getCategoryDetail()
+    },)
+
+    const submitCategoryEdit = async (data) => {
+        try {
+            setLoading(true)
+            console.log(data)
+            // let payload=data
+            // payload.status=data.status.value
+            // const status=await CategorySvc.update(payload,params.id)
+            // toast.success(status.message)
+            // navigate('/admin/category')
+
+        }
+        catch (exception) {
+            toast.warn(exception.message)
+            console.log("exception", exception)
+        }
+        finally {
+            setLoading(false)
+
+        }
+
+    }
     console.log(errors)
+
 
     return (
         <>
@@ -90,11 +102,11 @@ const CategoryCreate = () => {
                 <AdminNavBar />
                 <div className="container-fluid px-4">
                     <AdminBreadCrumb
-                        pageTitle={"Category Create"}
+                        pageTitle={"Category Edit"}
                         breadCrumbData={[
                             { label: "Dashboard", url: "/admin" },
-                            { label: "List Category", url: "/admin/Category" },
-                            { label: "Create Category", url: null }
+                            { label: "ListCategory", url: "/admin/category" },
+                            { label: "Edit Category", url: null }
                         ]}
 
                     />
@@ -102,53 +114,37 @@ const CategoryCreate = () => {
                         <div className="col-12">
                             <br />
                             <hr />
-                            <Form onSubmit={handleSubmit(submitCategoryCreate)}>
+                            <Form onSubmit={handleSubmit(submitCategoryEdit)}>
                                 <Form.Group as={Row} className="mx-3 mb-3" >
-                                    <Form.Label className="col-sm-3" htmlFor="category name">
-                                        Category name:
+                                    <Form.Label className="col-sm-3" htmlFor="bannertitle">
+                                        Banner Title:
                                     </Form.Label>
                                     <Col sm={9}>
                                         <TextInput
-                                            name={"name"}
-                                            placeholder="Enter Category name"
-                                            errMsg={errors?.name?.message}
-                                      
+                                            name={"title"}
+                                            placeholder="Enter Banner title"
+                                            errMsg={errors?.title?.message}
+                                            defaultValue=""
                                             control={control}
                                         />
                                     </Col>
                                     <hr />
-
-                                    <Form.Label className="col-sm-3" htmlFor="sub-categoryof">
-                                      Sub-Category Of:
-                                    </Form.Label>
-                                    <Col sm={9}>
-                                    
-                                    <SelectionButton
-                                            name={"parentId"}
-                                            control={control}
-                                            options={listofCat}
-                                            multiple={false}
-                                            errMsg={errors?.parentId?.message}
-                                        />
-                                    </Col>
-                                    <hr />
-
-
-                                    <Form.Label className="col-sm-3" htmlFor="showInHome">
-                                        Show In Home:
+                                    <Form.Label className="col-sm-3" htmlFor="bannerUrl">
+                                        Banner Url:
                                     </Form.Label>
                                     <Col sm={9} >
-                                    <SwitchCase
-                                        name="showInHome"
-                                        control={control}
-                                        defaultValue={false}
-                                        errMsg={errors?.showInHome?.message}
-                                    />
+                                        <TextInput
+                                            name={"url"}
+                                            type="url"
+                                            placeholder="Enter Banner Url"
+                                            errMsg={errors?.url?.message}
+                                            defaultValue=""
+                                            control={control}
+                                        />
                                     </Col>
-
                                     <hr />
-                                    <Form.Label className="col-sm-3" htmlFor="categoryStatus">
-                                        Category Status:
+                                    <Form.Label className="col-sm-3" htmlFor="bannerstatus">
+                                        Banner Status:
                                     </Form.Label>
                                     <Col sm={9} >
                                         <SelectionButton
@@ -163,8 +159,8 @@ const CategoryCreate = () => {
                                         />
                                     </Col>
                                     <hr />
-                                    <Form.Label className="col-sm-3" htmlFor="categoryImage">
-                                        Category Image:
+                                    <Form.Label className="col-sm-3" htmlFor="bannerimage">
+                                        Banner Image:
                                     </Form.Label>
                                     <Col sm={9}>
                                         <Form.Control
@@ -191,6 +187,7 @@ const CategoryCreate = () => {
 
                                             }}
                                         />
+
                                         <span className="text-danger">{errors?.image?.message}</span>
                                     </Col>
 
@@ -208,4 +205,4 @@ const CategoryCreate = () => {
         </>
     )
 }
-export default CategoryCreate
+export default EditCategory

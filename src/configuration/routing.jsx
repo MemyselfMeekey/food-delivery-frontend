@@ -12,8 +12,11 @@ import AdminDashboard from "../components/pages/admin/dashboard/admin-dashboard"
 import AuthComponent from "../components/auth/auth.component"
 import AdminMain from "../components/pages/admin/admin-main"
 
-import { BannerCreate,BannerMain } from "../components/pages/admin/banner"
+import { BannerCreate,BannerMain, EditBanner } from "../components/pages/admin/banner"
 import { CategoryMain, CreateCategory } from "../components/pages/admin/category"
+import ChangePassword from "../components/pages/auth/change-password"
+import ForgetPassword from "../components/pages/auth/forget-password"
+import ForgetPassTokenVerfication from "../components/pages/auth/set-newpass"
 
 const ErrorPage=()=>{
     return(
@@ -42,6 +45,9 @@ const RouterComponent=()=>{
                     <Route path="activation/:token" element={<ActivateRegistration/>}></Route>
                     <Route path="resendverifcation" element={<ResendVerificationToken/>}></Route>
                     <Route path="/verify-otp" element={<VerifyOtp/>}></Route>
+                    <Route path="/change-pass" element={<ChangePassword/>}></Route>
+                    <Route path="/forgetpass" element={<ForgetPassword/>}></Route>
+                    <Route path="/forgetpass/:token/verification" element={<ForgetPassTokenVerfication/>}></Route>
                     </Route>
                     <Route path="/register" element={<RegisterComponent/>}></Route>
                     
@@ -52,10 +58,13 @@ const RouterComponent=()=>{
                            <AdminDashboard/>
                            </AuthComponent>}>
                         <Route index element={<AdminMain/>}></Route>
+
                         <Route path="/admin/banner" element={<BannerMain/>}></Route>
                         <Route path="/admin/banner/create" element={<BannerCreate/>}></Route>
+                        <Route path="/admin/banner/:id/edit" element={<EditBanner/>}></Route>
 
                         <Route path="/admin/category" element={<CategoryMain/>}></Route>
+                        <Route path="/admin/category/create" element={<CreateCategory/>}></Route>
                         <Route path="/admin/category/create" element={<CreateCategory/>}></Route>
                     
                     

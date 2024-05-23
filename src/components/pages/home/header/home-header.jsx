@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { TextInput } from "../../../cms/form/input-component";
 import { FormActionButtons } from "../../../cms/form/form-action-buttons";
-import axiosInstance from "../../../../configuration/axios";
 import { toast } from "react-toastify";
 import "./hom-header.css"
 import AuthSvc from "../../auth/auth.service";
@@ -31,9 +30,10 @@ const HomeHeader = () => {
   const submitlogin = async (data) => {
     try {
       // Simulate login
-      const response=await AuthSvc.loginRequest(data)
-  
+      const response = await AuthSvc.loginRequest(data)
+
       toast.success("Please chcek your email for otp verification")
+      handleClose()
       nav('/verify-otp');
       // console.log("Login data:", data);
     } catch (exception) {
@@ -46,7 +46,7 @@ const HomeHeader = () => {
     <>
       <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "tomato", color: "white" }}>
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand" href="/">
             <img src={Banner4} alt="Bhokmandu Logo" width="45" height="40" /> Bhokmandu
           </a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style={{ marginLeft: "40px" }}>
@@ -119,8 +119,21 @@ const HomeHeader = () => {
                         submitLabel="Login"
                       />
                     </Form>
-                    or &nbsp;
-                    <NavLink to="/register">Create Account</NavLink>
+
+                    <Col sm={{ offset: 2, span: 8 }}>
+                      <NavLink className={"me-2"} onClick={(e)=>{
+                        e.preventDefault()
+                        handleClose()
+                        nav("/forgetpass")
+                      }} >Forgot Password</NavLink>
+                      or &nbsp;
+                      <NavLink to="/register">Create Account</NavLink>
+
+                    </Col>
+
+
+
+
                   </Modal.Body>
                 </Modal>
               </li>
