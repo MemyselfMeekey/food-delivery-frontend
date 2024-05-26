@@ -1,8 +1,37 @@
 import { useEffect, useState } from "react"
 import { Form } from "react-bootstrap"
 import {   useController } from "react-hook-form"
-
 import Select from "react-select"
+
+export const TextAreaInput = ({ name, defaultValue = "", id = "text", required = false, placeholder = "Enter your text", errMsg = "", control }) => {
+    const { field } = useController({
+        control: control,
+        name: name,
+        defaultValue: defaultValue
+    })
+    return (
+        <>
+            <Form.Control
+                as={'textarea'}
+                size="sm"
+                rows={5}
+                style={{ resize: 'none' }}
+                required={required}
+                id={id}
+                {...field}
+                placeholder={placeholder}
+            >
+
+            </Form.Control>
+            <span className="text-danger">
+                {errMsg}
+            </span>
+        </>
+    )
+}
+
+
+
 
 export const TextInput = ({ type = 'text', name, defaultValue = "", id = "text", required = false, placeholder = "Enter your text", errMsg = "", control, maxLength, }) => {
     const { field } = useController({
@@ -69,6 +98,8 @@ export const SelectionButton=({name,id="select",options=[],errMsg=null,control,m
         <Select
             {...field}
             options={options}
+            // isClearable={true}
+            isClearable={true}
             id={id}
             isMulti={multiple}
         />
@@ -79,7 +110,38 @@ export const SelectionButton=({name,id="select",options=[],errMsg=null,control,m
     )
 }
 
-export const SwitchCase=({name,control,defaultValue=true,id="switchcase",errMsg=""})=>{
+export const DropDownInput = ({ name, id = "text", options = [], control, defaultValue = "", errMsg = null }) => {
+    const { field } = useController({
+        control: control,
+        name: name,
+        defaultValue: ""
+    })
+    return (
+        <>
+           
+                <Form.Select
+                    id={id}
+                    size="sm"
+                    {...field}>
+                    <option value="">---SELECT ANY ONE---</option>
+                    {
+                        options && options.map((item, key) => (
+                            <option key={key} value={item.value}>
+                                {item.label}
+                            </option>
+                        ))
+                    }
+
+                </Form.Select>
+            
+            <span className="text-danger">
+                {errMsg}
+            </span>
+        </>
+    )
+}
+
+export const SwitchCase=({name,control,defaultValue=false,id="switchcase",errMsg=""})=>{
     const {field}=useController({
         name:name,
         control:control,
@@ -96,9 +158,10 @@ export const SwitchCase=({name,control,defaultValue=true,id="switchcase",errMsg=
         <>
             <Form.Check
                 type="switch"
+                className="ml-4"
                 defaultChecked={checked}
                 id={id}
-                label={defaultValue!==checked ?"Yes":"No"}
+                label={checked===true ?"Yes":"No"}
                 onChange={(e)=>{
                     const isChecked=e.target.checked
                     setChecked(isChecked)
@@ -109,5 +172,48 @@ export const SwitchCase=({name,control,defaultValue=true,id="switchcase",errMsg=
                 {errMsg}
             </span>
         </>
+    )
+}
+
+
+export const MultipleFileUpload = ({ name, setValue, setError, errMsg, setThumb, allowed = ['jpg', 'jpeg', 'png', 'svg', 'webp', 'bmp'], required = false }) => {
+    return (
+        <>
+            <Form.Control
+                type="file"
+                size="sm"
+                required={required}
+                multiple={true}
+                onChange={(e) => {
+                    const images = Object.values(e.target.files)
+
+                    let uploadableImages = []
+                    if (images) {
+                        images.map((image) => {
+                            const ext = image.name.split(".").pop()
+                            if (allowed.includes(ext.toLowerCase())) {
+                                if (image.size <= 3000000) {
+                                    uploadableImages.push(image)
+                                }
+                                else {
+                                    setError([name], "File size should be less than 3MB")
+                                }
+                            }
+                            else {
+                                setError([name], "Invalid file format")
+                            }
+                        })
+                        setValue(name, uploadableImages)
+                        setThumb(uploadableImages)
+                    }
+
+                }}
+
+            />
+            <span className="text-danger">
+                {errMsg}
+            </span>
+        </>
+
     )
 }

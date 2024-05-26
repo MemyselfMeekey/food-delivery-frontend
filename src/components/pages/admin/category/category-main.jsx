@@ -7,6 +7,8 @@ import { Spinner } from "react-bootstrap"
 import { NavLink } from "react-router-dom"
 import { toast } from "react-toastify"
 import Swal from "sweetalert2"
+import AdminSidebar from "../admin-sidebar"
+import AdminNavBar from "../admin.navbar"
 
 
 
@@ -29,6 +31,12 @@ const CategoryMain = () => {
             const response = await CategorySvc.listAll({ page, limit})      
            
             setCategoryList(response.result)
+            const totalPages = Math.ceil(response.meta.count / response.meta.limit)
+            setPagination({
+                page: +response.meta.page,
+                limit: +response.meta.limit,
+                count: totalPages,
+            })
         }
         catch (exception) {
             toast.warn(exception.message)
@@ -52,7 +60,7 @@ const CategoryMain = () => {
                 confirmButtonText: "Yes, delete it!"
             }).then((event) => {
                 if (event.isConfirmed) {
-                    deleteBanner(id)
+                    deleteCategory(id)
                 }
             });
 
@@ -63,7 +71,7 @@ const CategoryMain = () => {
         }
     }
 
-    const deleteBanner = async (id) => {
+    const deleteCategory = async (id) => {
         try {
             setLoading(true)
             const response = await CategorySvc.deleteData(id)
@@ -85,6 +93,8 @@ const CategoryMain = () => {
 
     return (
         <>
+        <div className="content">
+           <AdminNavBar/>
             <div className="container-fluid px-4">
                 <AdminBreadCrumb
                     pageTitle={"Category"}
@@ -95,7 +105,7 @@ const CategoryMain = () => {
                         { label: "List Category", url: null }
                     ]}
                 />
-                <div className="row my-3 mx-3">
+                <div className="row">
                     <div className="col-12">
                         <h4>Category List</h4>
                         <hr></hr>
@@ -142,7 +152,7 @@ const CategoryMain = () => {
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        <span className={`badge text-bg-${categories.status === true ? 'success' : 'danger'}`}>
+                                                        <span className={`badge text-bg-${categories.showInHome === true ? 'success' : 'danger'}`}>
                                                             {categories.showInHome === true ? "Yes" : "No"}
 
                                                         </span>
@@ -227,6 +237,7 @@ const CategoryMain = () => {
                         }
                     </div>
                 </div>
+            </div>
             </div>
         </>
     )

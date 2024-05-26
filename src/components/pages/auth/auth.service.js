@@ -1,6 +1,7 @@
 import HttpServer from "../../../services/axios.service";
 
 class AuthService extends HttpServer{
+
     loginRequest=async(data)=>{
         try{
             const response= await this.postRequest(
@@ -16,6 +17,7 @@ class AuthService extends HttpServer{
             throw exception
         }
     }
+
     otpRequest=async(data)=>{
         try{
     
@@ -34,6 +36,7 @@ class AuthService extends HttpServer{
               throw exception
         }
     }
+
     register=async(data)=>{
         try{
             const response=await this.postRequest(
@@ -50,6 +53,7 @@ class AuthService extends HttpServer{
             throw exception
         }
     }
+
     tokenVerification=async(token)=>{
         try{
            
@@ -63,6 +67,7 @@ class AuthService extends HttpServer{
             throw exception
         }
     }
+
     userActivation=async(data,token)=>{
         try{
         const response=await this.postRequest(
@@ -75,6 +80,7 @@ class AuthService extends HttpServer{
         throw exception
     }
     }
+
     resendVerification=async(data)=>{
         try{
             const response=await this.postRequest(
@@ -100,6 +106,34 @@ class AuthService extends HttpServer{
             throw exception
         }
     }
+
+    getUserById=async(id)=>{
+        try{
+            const response=await this.getRequest(
+                'user/'+id,
+                {auth:true}
+            )
+            return response
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+
+    updateId=async(id,data)=>{
+        try{
+            const response=await this.putRequest(
+                `user/${id}/edit`,
+                data,
+                {auth:true}
+            )
+            return response
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+
     changePassword=async(data)=>{
         try{
             const response=await this.postRequest(
@@ -153,6 +187,19 @@ class AuthService extends HttpServer{
         }
     }
 
+    listAllUsers=async({page,limit})=>{
+        try{
+            const response=await this.getRequest(
+                `user?page=${page}&limit=${limit}`,
+                {auth:true}
+            )
+            return response
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+
     logout=async()=>{
         try{
             const response=await this.postRequest(
@@ -164,6 +211,19 @@ class AuthService extends HttpServer{
         catch(exception){
             throw exception
         } 
+    }
+
+    deleteUser=async(id)=>{
+        try{
+            const response=await this.deleteRequest(
+                'user/'+id,
+                {auth:true}
+            )
+            return response
+        }
+        catch(exception){
+            throw exception
+        }
     }
 
 

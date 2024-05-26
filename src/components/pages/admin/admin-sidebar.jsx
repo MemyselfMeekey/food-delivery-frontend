@@ -71,6 +71,13 @@ const AdminSidebar = () => {
                     </a>
                 </li>
                 <li className="nav-item" style={{fontSize:"18px"}}>
+                    <a className="nav-link collapsed" href="/admin/user" data-toggle="collapse" data-target="#collapseUtilities"
+                        aria-expanded="true" aria-controls="collapseUtilities">
+                      <i class="fa-solid fa-user"></i>
+                        <span>User Management</span>
+                    </a>
+                </li>
+                <li className="nav-item" style={{fontSize:"18px"}}>
                     <a className="nav-link collapsed" href="/admin/offer" data-toggle="collapse" data-target="#collapseUtilities"
                         aria-expanded="true" aria-controls="collapseUtilities">
                         <i className="fas fa-fw fa-wrench"></i>
@@ -87,16 +94,17 @@ const AdminSidebar = () => {
                 </li>
                 <hr className="sidebar-divider" />
                 <li className="nav-item" style={{fontSize:"18px"}}>
+                <a className="nav-link collapsed"  data-toggle="collapse" href="/change-pass"data-target="#collapseUtilities"
+                        aria-expanded="true" aria-controls="collapseUtilities">
+                       <i class="fa-solid fa-key"></i>
+                        <span>Change Password</span>
+                    </a>
                     <a className="nav-link collapsed" onClick={Logout} data-toggle="collapse" data-target="#collapseUtilities"
                         aria-expanded="true" aria-controls="collapseUtilities">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         <span>Logout</span>
                     </a>
-                    <a className="nav-link collapsed" onClick data-toggle="collapse" href="/change-pass"data-target="#collapseUtilities"
-                        aria-expanded="true" aria-controls="collapseUtilities">
-                       <i class="fa-solid fa-key"></i>
-                        <span>Change Password</span>
-                    </a>
+                   
                 </li>
             </ul>
         </>

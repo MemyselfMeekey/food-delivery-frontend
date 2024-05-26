@@ -44,7 +44,7 @@ class HttpServer{
         }
         getRequest=async(url,config=null)=>{
             try{
-                console.log("url",url)
+
               
                 this.setHeaders(config)
                

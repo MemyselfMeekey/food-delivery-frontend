@@ -23,51 +23,51 @@ const RegisterComponent = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const { handleSubmit, register, setValue, setError, control,formState: { errors } } = useForm({
-        resolver:yupResolver(registerSchema)
+    const { handleSubmit, register, setValue, setError, control, formState: { errors } } = useForm({
+        resolver: yupResolver(registerSchema)
     })
 
-    const submitRegister=async(data)=>{
-        try{
-        const response=await AuthSvc.register(data)
-        toast.success("You have been successfully registered. Please check your email")
-        navigate("/")
+    const submitRegister = async (data) => {
+        try {
+            const response = await AuthSvc.register(data)
+            toast.success(response.message)
+            navigate("/")
         }
-        catch(exception){
+        catch (exception) {
             toast.warn("Submitting the data couldnot be possible")
             console.log(exception)
         }
     }
     console.log(errors)
-    useEffect(()=>{
-       const token=localStorage.getItem('_act')||null 
-       const userDetail=JSON.parse(localStorage.getItem("_au"))||null
-       if(token && userDetail){
-        toast.info("You are already logged in")
-       }
-    },[])
-    
+    useEffect(() => {
+        const token = localStorage.getItem('_act') || null
+        const userDetail = JSON.parse(localStorage.getItem("_au")) || null
+        if (token && userDetail) {
+            toast.info("You are already logged in")
+        }
+    }, [])
+
 
     const LoginCheck = Yup.object({
         email: Yup.string().email().required(),
         password: Yup.string().required(),
-      });
-    
-    const { handleSubmit:handleSubmit2, control:controls,formState: { error } } = useForm({
+    });
+
+    const { handleSubmit: handleSubmit2, control: controls, formState: { error } } = useForm({
         resolver: yupResolver(LoginCheck),
     })
-    const submitLogin=async(data)=>{
+    const submitLogin = async (data) => {
         try {
             // Simulate login
-            const response=await AuthSvc.loginRequest(data)
-        
-            toast.success("Please chcek your email for otp verification")
+            const response = await AuthSvc.loginRequest(data)
+
+            toast.success(response.result)
             navigate('/verify-otp');
             // console.log("Login data:", data);
-          } catch (exception) {
+        } catch (exception) {
             toast.warn("Server call failed");
             console.log("exception", exception);
-          }
+        }
     }
 
     return (
@@ -107,7 +107,7 @@ const RegisterComponent = () => {
                                     Username
                                 </Form.Label>
                                 <Col sm="10">
-                                <TextInput
+                                    <TextInput
                                         type="text"
                                         id="name"
                                         name="name"
@@ -123,12 +123,12 @@ const RegisterComponent = () => {
                                     Role
                                 </Form.Label>
                                 <Col sm="10">
-                                   <Form.Select
-                                    {...register('role',{required:true})}
-                                   >
-                                    <option value="customer">customer</option>
+                                    <Form.Select
+                                        {...register('role', { required: true })}
+                                    >
+                                        <option value="customer">customer</option>
 
-                                   </Form.Select>
+                                    </Form.Select>
                                 </Col>
                             </Form.Group>
                             <Form.Group as={Row} className="mb-3" >
@@ -136,7 +136,7 @@ const RegisterComponent = () => {
                                     Phone
                                 </Form.Label>
                                 <Col sm="10">
-                                <TextInput
+                                    <TextInput
                                         type="tel"
                                         id="phone"
                                         name="phone"
@@ -152,35 +152,35 @@ const RegisterComponent = () => {
                                     Image
                                 </Form.Label>
                                 <Col sm="10">
-                               <Form.Control
-                                type="file"
-                                name="image"
-                                onChange={(e)=>{
-                                    const image=e.target.files[0]
-                                    const ext=image.name.split(".").pop()
-                                    const allowed=['jpg','png','svg','jpeg','webpg','bmp']
-                                    if(allowed.includes(ext.toLowerCase())){
-                                        if(image.size<=3000000){
-                                            setValue("image",image)
-                                        }
-                                        else{
-                                            setError("image",{message:"File size is not allowed"})
-                                        }
-                                    }
-                                    else{
-                                        setError("image",{message:"File format not supported"})
-                                    }
-                                }}
-                               
-                               />
-                               <span className="text-danger">{errors?.image?.message}</span>
-                               
-                               
+                                    <Form.Control
+                                        type="file"
+                                        name="image"
+                                        onChange={(e) => {
+                                            const image = e.target.files[0]
+                                            const ext = image.name.split(".").pop()
+                                            const allowed = ['jpg', 'png', 'svg', 'jpeg', 'webpg', 'bmp']
+                                            if (allowed.includes(ext.toLowerCase())) {
+                                                if (image.size <= 3000000) {
+                                                    setValue("image", image)
+                                                }
+                                                else {
+                                                    setError("image", { message: "File size is not allowed" })
+                                                }
+                                            }
+                                            else {
+                                                setError("image", { message: "File format not supported" })
+                                            }
+                                        }}
+
+                                    />
+                                    <span className="text-danger">{errors?.image?.message}</span>
+
+
                                 </Col>
                             </Form.Group>
                             <FormActionButtons
-                            resetLabel="Reset"
-                            submitLabel="Register"
+                                resetLabel="Reset"
+                                submitLabel="Register"
                             />
                         </Form>
                         <Button className="btn btn-warning mx-5" onClick={handleShow}>
@@ -195,29 +195,29 @@ const RegisterComponent = () => {
                                     <Form.Group className="row mb-3">
                                         <Form.Label className="col-sm-3" htmlFor="email">Username:</Form.Label>
                                         <Col sm={9}>
-                                        <TextInput
-                                        type="email"
-                                        id="email"
-                                        name="email"
-                                        placeholder="Enter your email "
-                                        required={true}
-                                        control={controls}
-                                        errMsg={errors?.email?.message}
-                                    />
+                                            <TextInput
+                                                type="email"
+                                                id="email"
+                                                name="email"
+                                                placeholder="Enter your email "
+                                                required={true}
+                                                control={controls}
+                                                errMsg={errors?.email?.message}
+                                            />
                                         </Col>
                                     </Form.Group>
                                     <Form.Group className="row mb-3">
-                                    <Form.Label className="col-sm-3" htmlFor="password">Password:</Form.Label>
+                                        <Form.Label className="col-sm-3" htmlFor="password">Password:</Form.Label>
                                         <Col sm={9}>
-                                        <TextInput
-                                        type="password"
-                                        id="password"
-                                        name="password"
-                                        placeholder="Enter your password "
-                                        required={true}
-                                        control={controls}
-                                        errMsg={errors?.password?.message}
-                                    />
+                                            <TextInput
+                                                type="password"
+                                                id="password"
+                                                name="password"
+                                                placeholder="Enter your password "
+                                                required={true}
+                                                control={controls}
+                                                errMsg={errors?.password?.message}
+                                            />
                                         </Col>
                                     </Form.Group>
                                     <Form.Group className="row mb-3">
@@ -234,7 +234,7 @@ const RegisterComponent = () => {
                             </Modal.Body>
 
                         </Modal>
-                       
+
                     </div>
                 </div>
             </div>
