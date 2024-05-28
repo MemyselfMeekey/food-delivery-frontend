@@ -67,11 +67,25 @@ const EditMenu = () => {
         try {
            setLoading(true)
             
-            let payload = data
-            payload.status = data.status.value
-            payload.categories=data.categories?.value || null
+           let formData = new FormData()
 
-            const status = await MenuSvc.update(payload, params.id)
+            formData.append('name', data.name)
+            formData.append('description', data.description)
+            if (data.categories) {
+                data.categories.map((cat, ind) => {
+                    formData.append(`categories[${ind}]`, cat.value)
+                })
+            }
+            formData.append("price", (data.price))
+            formData.append("discount", (data.discount))
+            formData.append("showInHome", data.showInHome ? true : false)
+            formData.append("status", data.status.value || 'inactive')
+            if (thumb) {
+                thumb.map((image) => {
+                    formData.append('images', image, image.name)
+                })
+            }
+            const status = await MenuSvc.update(formData, params.id)
        
             toast.success(status.message)
             navigate('/admin/menu')

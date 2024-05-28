@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Form } from "react-bootstrap"
-import {   useController } from "react-hook-form"
+import { useController } from "react-hook-form"
 import Select from "react-select"
 
 export const TextAreaInput = ({ name, defaultValue = "", id = "text", required = false, placeholder = "Enter your text", errMsg = "", control }) => {
@@ -59,6 +59,35 @@ export const TextInput = ({ type = 'text', name, defaultValue = "", id = "text",
         </>
     )
 }
+
+
+
+export const TimeInput = ({ type = 'date', name, id = "time", required = true, errMsg = "", control }) => {
+    const { field } = useController({
+        control: control,
+        name: name,
+    })
+    return (
+        <>
+            <Form.Control
+                type={type}
+                className="my-2"
+                size="sm"
+                required={required}
+                id={id}
+                {...field}
+                placeholder={type === 'time' ? 'HH:MM' : 'YYYY-MM-DD'}
+            >
+
+            </Form.Control>
+            <span className="text-danger">
+                {errMsg}
+            </span>
+        </>
+    )
+}
+
+
 export const PassInput = ({ type = 'password', name, defaultValue = "", id = "password", required = false, placeholder = "Enter your password", errMsg = "", control, maxLength, }) => {
     const { field } = useController({
         control: control,

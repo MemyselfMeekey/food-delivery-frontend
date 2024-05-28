@@ -21,6 +21,8 @@ import { BannerCreate,BannerMain, EditBanner } from "../components/pages/admin/b
 import { CategoryMain, CreateCategory, EditCategory } from "../components/pages/admin/category"
 import {UserMain,CreateUser,EditUser} from "../components/pages/admin/user-admin"
 import { CreateMenu, EditMenu, MenuMain } from "../components/pages/admin/menu"
+import { CreateOffer, EditOffer, OfferMain } from "../components/pages/admin/offer"
+import { CreateOrder, EditOrder, OrderMain } from "../components/pages/admin/order"
 
 const ErrorPage=()=>{
     return(
@@ -78,7 +80,16 @@ const RouterComponent=()=>{
                         <Route path="/admin/user" element={<UserMain/>}></Route>
                         <Route path="/admin/user/create" element={<CreateUser/>}></Route>
                         <Route path="/admin/user/:id/edit" element={<EditUser/>}></Route>
-      
+
+                        <Route path="/admin/offer" element={<OfferMain/>}></Route>
+                        <Route path="/admin/offer/create" element={<CreateOffer/>}></Route>
+                        <Route path="/admin/offer/:id/edit" element={<EditOffer/>}></Route>
+
+
+                        <Route path="/admin/order" element={<OrderMain/>}></Route>
+                        <Route path="/admin/order/create" element={<CreateOrder/>}></Route>
+                        <Route path="/admin/order/:id/edit" element={<EditOrder/>}></Route>
+
                     </Route>
                 </Routes>
             </BrowserRouter>

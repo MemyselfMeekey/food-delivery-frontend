@@ -48,7 +48,7 @@ class CategoryService extends HttpServer{
 
     update=async(data,id)=>{
         try{
-            const response=await this.postRequest(
+            const response=await this.putRequest(
                 `category/${id}/edit`,
                 data,
                 {auth:true}
