@@ -143,7 +143,7 @@ const CreateOffer = () => {
 
                                     </Col>
 
-                                    <Form.Label className="col-sm-3" htmlFor="endDate">
+                                    <Form.Label className="col-sm-3" htmlFor="menu">
                                         Set Menu's Offer:
                                     </Form.Label>
 

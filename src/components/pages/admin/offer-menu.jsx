@@ -25,41 +25,63 @@ export const MenuSelectorComponent = ({ menuOffer, setMenuOffer, selectionMenu }
         }
     }
 
+    const removeOffer = (index) => {
+        try {
+            const updatedMenuAttrs = menuAttrs.filter((attr, ind) => ind !== index);
+            setMenuAttrs(updatedMenuAttrs);
+            setMenuOffer(updatedMenuAttrs); // Update the parent state if necessary
+        } catch (exception) {
+            console.log("exception", exception);
+        }
+    };
+
+    const handleSelectChange = (selectedOption, index) => {
+        const updatedMenuAttrs = [...menuAttrs];
+        updatedMenuAttrs[index].menuId = selectedOption ? selectedOption.value : "";
+        setMenuAttrs(updatedMenuAttrs);
+        setMenuOffer(updatedMenuAttrs); // Update the parent state if necessary
+    };
+
+    const handleInputChange = (value, index) => {
+        const updatedMenuAttrs = [...menuAttrs];
+        updatedMenuAttrs[index].offerDiscount = value;
+        setMenuAttrs(updatedMenuAttrs);
+        setMenuOffer(updatedMenuAttrs); // Update the parent state if necessary
+    };
+
+
     return (
         <>
             {
                 menuAttrs && menuAttrs.map((attr, ind) => (
                     <Row className="mb-3" key={ind}>
                         <Col sm={5} md={4}>
-                          <Select
-                            size="sm"
-                            options={selectionMenu}
-                            isClearable={true}
-                            // isMulti={true}
-                            // placeholder="MenuItem"
-                            // onChange={(e)=>{
-                            //     const val=e.target.value
-                            // }}
-                          />
-
+                        <Select
+                                size="sm"
+                                options={selectionMenu}
+                                isClearable={true}
+                                value={selectionMenu.find(option => option.value === attr.menuId) || null}
+                                onChange={(selectedOption) => handleSelectChange(selectedOption, ind)}
+                            />
                         </Col>
                         <Col sm={5} md={6}>
-                            <Form.Control
-
+                        <Form.Control
                                 type="number"
-
                                 size="sm"
                                 className="mb-3"
                                 placeholder="Offer in %"
-                                onChange={(e)=>{
-                                    const val=e.target.value
-                                }}
+                                value={attr.offerDiscount}
+                                onChange={(e) => handleInputChange(e.target.value, ind)}
                             />
                         </Col>
                         <Col sm={2} md={2}>
-                            <Button type="button" size="sm" variant="danger" className="me-3" onClick={(e)=>{
-                                
-                            }}>
+                        <Button
+                                type="button"
+                                size="sm"
+                                variant="danger"
+                                className="me-3"
+                                onClick={() => removeOffer(ind)}
+                            >
                                 <i className="fa fa-trash"></i>
                             </Button>
                         </Col>
