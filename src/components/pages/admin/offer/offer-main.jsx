@@ -18,14 +18,14 @@ const OfferMain = () => {
         try {
             setLoading(true)
             const response = await OfferSvc.getAllOffer({ page: 1, limit: 10 })
-            console.log("response",response.result)
+            
             setOfferList(response.result)
         }
         catch (exception) {
             toast.warn(exception.message)
             console.log("exception", exception)
         }
-        finally{
+        finally {
             setLoading(false)
         }
     }
@@ -64,18 +64,18 @@ const OfferMain = () => {
         }
     }
 
-    const deleteOffer=async(id)=>{
-        try{
+    const deleteOffer = async (id) => {
+        try {
             setLoading(true)
-            const response=await OfferSvc.deleteOffer(id)
+            const response = await OfferSvc.deleteOffer(id)
             toast.success(response.message)
-            LoadOfferList({page:1,limit:10})
+            LoadOfferList({ page: 1, limit: 10 })
         }
-        catch(exception){
+        catch (exception) {
             toast.warn(exception.message)
-            console.log("Exception",exception)
+            console.log("Exception", exception)
         }
-        finally{
+        finally {
             setLoading(false)
         }
     }
@@ -107,6 +107,8 @@ const OfferMain = () => {
                                         <th>Start On</th>
                                         <th>End On</th>
                                         <th>Show In Home</th>
+                                        <th>Discount</th>
+                                        <th>Final Price</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -128,9 +130,11 @@ const OfferMain = () => {
                                                         <td>
                                                             {offer.description}
                                                         </td>
-                                                        <td>
 
+                                                        <td>
+                                                        {offer.menu.map(menuItem => menuItem.menuId.name).join(' , ')}
                                                         </td>
+
                                                         <td>
                                                             {formatDate(offer.startDate)}
                                                         </td>
@@ -142,6 +146,14 @@ const OfferMain = () => {
                                                                 {offer.showInHome === true ? "Yes" : "No"}
                                                             </span>
 
+                                                        </td>
+
+                                                        <td>
+                                                            {offer.menu.map(menuItem=>menuItem.offerDiscount ).join(' % | ')} %
+                                                        </td>
+
+                                                        <td>
+                                                        {offer.menu.map(menuItem=>menuItem.offerPrice).join(' | ')}
                                                         </td>
                                                         <td>
                                                             <NavLink onClick={(e) => {

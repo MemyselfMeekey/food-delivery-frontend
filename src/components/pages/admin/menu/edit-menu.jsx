@@ -146,8 +146,8 @@ const EditMenu = () => {
         LoadCategories()
     }, [])
 
-//     console.log("errors",errors)
-    console.log("catOpts",checked)
+// //     console.log("errors",errors)
+//     console.log("catOpts",checked)
 
     return (
         <>

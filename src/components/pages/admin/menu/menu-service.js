@@ -59,6 +59,18 @@ class MenuService extends HttpServer{
         }
     }
 
+    homeList=async()=>{
+        try{
+            const response=await this.getRequest(
+                'menu/home/list'
+            )
+            return response
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+
     deleteMenu=async(id)=>{
         try{
             const response=await this.deleteRequest(

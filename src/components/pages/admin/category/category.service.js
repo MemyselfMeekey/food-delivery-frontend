@@ -60,6 +60,18 @@ class CategoryService extends HttpServer{
         }
     }
 
+    homeList=async()=>{
+        try{
+            const response=await this.getRequest(
+                'category/home/list'
+            )
+            return response
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+
     deleteData=async(id)=>{
         try{
             const response=await this.deleteRequest(

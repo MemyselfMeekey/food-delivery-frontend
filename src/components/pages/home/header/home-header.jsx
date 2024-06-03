@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Banner4 from "../../../../assets/images/banner4.jpeg";
 import { Button, Form, Modal, Col } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -10,9 +10,15 @@ import { FormActionButtons } from "../../../cms/form/form-action-buttons";
 import { toast } from "react-toastify";
 import "./hom-header.css"
 import AuthSvc from "../../auth/auth.service";
+import CategorySvc from "../../admin/category/category.service";
 
 const HomeHeader = () => {
   const nav = useNavigate();
+
+  const loggedInUser = JSON.parse(localStorage.getItem("_user"))
+
+  const [categories,setCategories]=useState()
+
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -40,7 +46,22 @@ const HomeHeader = () => {
       toast.warn("Server call failed");
       console.log("exception", exception);
     }
-  };
+  }
+
+  const LoadCategories=async()=>{
+    try{
+      const response=await CategorySvc.homeList()
+      setCategories(response.result)
+    }
+    catch(exception){
+      toast.warn(exception.message)
+      console.log("exception",exception)
+    }
+  }
+
+  useEffect(()=>{
+    LoadCategories()
+  },[])
 
   return (
     <>
@@ -61,9 +82,11 @@ const HomeHeader = () => {
               <li className="nav-item dropdown">
                 <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
                 <ul className="dropdown-menu">
-                  <li><a className="dropdown-item" href="#">Breakfast</a></li>
-                  <li><a className="dropdown-item" href="#">Lunch</a></li>
-                  <li><a className="dropdown-item" href="#">Dinner</a></li>
+                  {
+                    categories && categories.map((cat,inx)=>(
+                      <li  key={inx}><a className="dropdown-item" href="#">{cat.name}</a></li>
+                    ))
+                  }
                 </ul>
               </li>
               <li className="nav-item">
@@ -75,68 +98,80 @@ const HomeHeader = () => {
             </ul>
 
             <ul className="navbar-nav">
-              <li className="nav-item">
-                <NavLink className={"btn btn-sm btn-outline-success mx-2"} to="/register">Register</NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className={"btn btn-sm btn-outline-success btn-custom mx-2"} onClick={handleShow}>Login</NavLink>
-                <Modal show={show} onHide={handleClose} className="text-center">
-                  <Modal.Header closeButton className="text-center">
-                    <h1 className="text-center">Login</h1>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <Form onSubmit={handleSubmit(submitlogin)}>
-                      <Form.Group className="row mb-3">
-                        <Form.Label className="col-sm-3" htmlFor="email">Username:</Form.Label>
-                        <Col sm={9}>
-                          <TextInput
-                            type="email"
-                            id="Username"
-                            name="email"
-                            placeholder="Enter your username"
-                            required={true}
-                            control={control}
-                            errMsg={errors?.email?.message}
+
+              {
+                loggedInUser ? <>
+
+                <li className="nav-item">
+                <a className="nav-link active btn btn-sm btn-outline-success mx-2"  aria-current="page" href={`/${loggedInUser.role}`}><i class="fa-solid fa-user"></i> {loggedInUser.name}</a>
+                </li>
+
+                </> : <>
+                  <li className="nav-item">
+                    <NavLink className={"btn btn-sm btn-outline-success mx-2"} to="/register">Register</NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink className={"btn btn-sm btn-outline-success mx-2"} onClick={handleShow}>Login</NavLink>
+                    <Modal show={show} onHide={handleClose} className="text-center">
+                      <Modal.Header closeButton className="text-center">
+                        <h1 className="text-center">Login</h1>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <Form onSubmit={handleSubmit(submitlogin)}>
+                          <Form.Group className="row mb-3">
+                            <Form.Label className="col-sm-3" htmlFor="email">Username:</Form.Label>
+                            <Col sm={9}>
+                              <TextInput
+                                type="email"
+                                id="Username"
+                                name="email"
+                                placeholder="Enter your username"
+                                required={true}
+                                control={control}
+                                errMsg={errors?.email?.message}
+                              />
+                            </Col>
+                          </Form.Group>
+                          <Form.Group className="row mb-3">
+                            <Form.Label className="col-sm-3" htmlFor="password">Password:</Form.Label>
+                            <Col sm={9}>
+                              <TextInput
+                                type="password"
+                                id="Password"
+                                name="password"
+                                placeholder="Enter your password"
+                                required={true}
+                                control={control}
+                                errMsg={errors?.password?.message}
+                              />
+                            </Col>
+                          </Form.Group>
+                          <FormActionButtons
+                            resetLabel="Reset"
+                            submitLabel="Login"
                           />
+                        </Form>
+
+                        <Col sm={{ offset: 2, span: 8 }}>
+                          <NavLink className={"me-2"} onClick={(e) => {
+                            e.preventDefault()
+                            handleClose()
+                            nav("/forgetpass")
+                          }} >Forgot Password</NavLink>
+                          or &nbsp;
+                          <NavLink to="/register">Create Account</NavLink>
+
                         </Col>
-                      </Form.Group>
-                      <Form.Group className="row mb-3">
-                        <Form.Label className="col-sm-3" htmlFor="password">Password:</Form.Label>
-                        <Col sm={9}>
-                          <TextInput
-                            type="password"
-                            id="Password"
-                            name="password"
-                            placeholder="Enter your password"
-                            required={true}
-                            control={control}
-                            errMsg={errors?.password?.message}
-                          />
-                        </Col>
-                      </Form.Group>
-                      <FormActionButtons
-                        resetLabel="Reset"
-                        submitLabel="Login"
-                      />
-                    </Form>
-
-                    <Col sm={{ offset: 2, span: 8 }}>
-                      <NavLink className={"me-2"} onClick={(e)=>{
-                        e.preventDefault()
-                        handleClose()
-                        nav("/forgetpass")
-                      }} >Forgot Password</NavLink>
-                      or &nbsp;
-                      <NavLink to="/register">Create Account</NavLink>
-
-                    </Col>
 
 
 
 
-                  </Modal.Body>
-                </Modal>
-              </li>
+                      </Modal.Body>
+                    </Modal>
+                  </li>
+                </>
+              }
+
             </ul>
 
             <form className="d-flex" role="search">

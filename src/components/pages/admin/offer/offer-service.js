@@ -3,8 +3,14 @@ import HttpServer from "../../../../services/axios.service";
  
 class OfferService extends HttpServer{
 
-    createOffer=async()=>{
+    createOffer=async(data)=>{
         try{
+            const response=await this.postRequest(
+                'offer',
+                data,
+                {auth:true}
+            )
+            return response
 
         }
         catch(exception){
@@ -27,8 +33,13 @@ class OfferService extends HttpServer{
         }
     }
 
-    getOfferById=async()=>{
+    getOfferById=async(id)=>{
         try{
+            const response=await this.getRequest(
+                'offer/'+id,
+                {auth:true}
+            )
+            return response
 
         }
         catch(exception){
@@ -36,9 +47,14 @@ class OfferService extends HttpServer{
         }
     }
 
-    updateOffer=async()=>{
+    updateOffer=async(data,id)=>{
         try{
-
+            const response=await this.putRequest(
+                `offer/${id}/edit`,
+                data,
+                {auth:true}
+            )
+            return response
         }
         catch(exception){
             throw exception

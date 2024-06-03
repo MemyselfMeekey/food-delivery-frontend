@@ -1,99 +1,72 @@
-import { useEffect, useState } from "react"
-import { Row, Button, Col,Form } from "react-bootstrap"
-import Select from "react-select"
+import { useEffect, useState } from "react";
+import { Row, Button, Col, Form } from "react-bootstrap";
+import Select from "react-select";
 
 export const MenuSelectorComponent = ({ menuOffer, setMenuOffer, selectionMenu }) => {
-
-    let [menuAttrs, setMenuAttrs] = useState(null)
+    const [menuAttrs, setMenuAttrs] = useState([]);
 
     useEffect(() => {
-        setMenuAttrs(menuOffer)
-    }, [menuOffer])
+        if (menuOffer) {
+            setMenuAttrs(menuOffer);
+        }
+    }, [menuOffer]);
 
-    const addMoreOffer=()=>{
-        try{
-            let oldAttrs=[]
-            if(menuAttrs){
-                oldAttrs=[...menuAttrs,{menuId:"",offerDiscount:""}]
-            }else{
-                oldAttrs=[{menuId:"",offerDiscount:""}]
-            }
-            setMenuAttrs([...oldAttrs])
-        }
-        catch(exception){
-            console.log("exception",exception)
-        }
-    }
-
-    const removeOffer = (index) => {
-        try {
-            const updatedMenuAttrs = menuAttrs.filter((attr, ind) => ind !== index);
-            setMenuAttrs(updatedMenuAttrs);
-            setMenuOffer(updatedMenuAttrs); // Update the parent state if necessary
-        } catch (exception) {
-            console.log("exception", exception);
-        }
+    const addMoreOffer = () => {
+        setMenuAttrs([...menuAttrs, { menuId: "", offerDiscount: "" }]);
     };
 
-    const handleSelectChange = (selectedOption, index) => {
+    const handleMenuIdChange = (index, selectedOption) => {
         const updatedMenuAttrs = [...menuAttrs];
-        updatedMenuAttrs[index].menuId = selectedOption ? selectedOption.value : "";
+        updatedMenuAttrs[index].menuId = selectedOption;
         setMenuAttrs(updatedMenuAttrs);
-        setMenuOffer(updatedMenuAttrs); // Update the parent state if necessary
+        setMenuOffer(updatedMenuAttrs);
     };
 
-    const handleInputChange = (value, index) => {
+    const handleOfferDiscountChange = (index, event) => {
         const updatedMenuAttrs = [...menuAttrs];
-        updatedMenuAttrs[index].offerDiscount = value;
+        updatedMenuAttrs[index].offerDiscount = event.target.value;
         setMenuAttrs(updatedMenuAttrs);
-        setMenuOffer(updatedMenuAttrs); // Update the parent state if necessary
+        setMenuOffer(updatedMenuAttrs);
     };
 
+    const handleRemoveOffer = (index) => {
+        const updatedMenuAttrs = menuAttrs.filter((_, i) => i !== index);
+        setMenuAttrs(updatedMenuAttrs);
+        setMenuOffer(updatedMenuAttrs);
+    };
 
     return (
         <>
-            {
-                menuAttrs && menuAttrs.map((attr, ind) => (
-                    <Row className="mb-3" key={ind}>
-                        <Col sm={5} md={4}>
+            {menuAttrs.map((attr, ind) => (
+                <Row className="mb-3" key={ind}>
+                    <Col sm={5} md={4}>
                         <Select
-                                size="sm"
-                                options={selectionMenu}
-                                isClearable={true}
-                                value={selectionMenu.find(option => option.value === attr.menuId) || null}
-                                onChange={(selectedOption) => handleSelectChange(selectedOption, ind)}
-                            />
-                        </Col>
-                        <Col sm={5} md={6}>
+                            options={selectionMenu}
+                            value={attr.menuId}
+                            onChange={(selectedOption) => handleMenuIdChange(ind, selectedOption)}
+                            isClearable={true}
+                        />
+                    </Col>
+                    <Col sm={5} md={6}>
                         <Form.Control
-                                type="number"
-                                size="sm"
-                                className="mb-3"
-                                placeholder="Offer in %"
-                                value={attr.offerDiscount}
-                                onChange={(e) => handleInputChange(e.target.value, ind)}
-                            />
-                        </Col>
-                        <Col sm={2} md={2}>
-                        <Button
-                                type="button"
-                                size="sm"
-                                variant="danger"
-                                className="me-3"
-                                onClick={() => removeOffer(ind)}
-                            >
-                                <i className="fa fa-trash"></i>
-                            </Button>
-                        </Col>
-                    </Row>
-                ))
-            }
+                            type="number"
+                            value={attr.offerDiscount}
+                            onChange={(e) => handleOfferDiscountChange(ind, e)}
+                            size="sm"
+                            placeholder="Offer in %"
+                        />
+                    </Col>
+                    <Col sm={2} md={2}>
+                        <Button type="button" size="sm" variant="danger" className="me-3" onClick={() => handleRemoveOffer(ind)}>
+                            <i className="fa fa-trash"></i>
+                        </Button>
+                    </Col>
+                </Row>
+            ))}
             <hr />
-
             <Button type="button" size="sm" variant="success" className="float-end" onClick={addMoreOffer}>
                 Add Offer In Items
             </Button>
-
         </>
-    )
-}
+    );
+};

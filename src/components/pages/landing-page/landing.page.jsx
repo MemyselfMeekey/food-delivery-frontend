@@ -2,40 +2,29 @@ import { useCallback, useEffect, useState } from "react"
 
 import HomeSlider from "../home/slider/home-slider.jsx"
 import SingleMenuGrid from "./singleMenugrid.jsx"
+import { toast } from "react-toastify"
+import MenuSvc from "../admin/menu/menu-service.js"
 
 
 const LandingPage=()=>{
     let [menuList,setmenuList]=useState()
-    let [loading,setLoading]=useState(false)
-    const handleFunction=useCallback(async()=>{
-        const response={
-            result:[
-                {
-                    _id:"123",
-                    title:"BreakFast",
-                    slug:"menu-name",
-                    categories:[{_id:"321",title:"Category One"}],
-                    price:1000,
-                    disocunt:10,
-                    afterDiscount:900
-                },
-                {
-                    _id:"123",
-                    title:"Dinner",
-                    slug:"menu-name-two",
-                    categories:[{_id:"456",title:"Category two"}],
-                    price:1000,
-                    disocunt:10,
-                    afterDiscount:900
-                }
-            ],
-            message:"",
-            meta:null
+    // let [loading,setLoading]=useState(false)
+    
+
+   
+    const MenuHomeList=async()=>{
+        try{
+            const response=await MenuSvc.homeList()
+            setmenuList(response.result)
         }
-        setmenuList(response.result)
-    },[loading])
+        catch(exception){
+            toast.warn(exception.message)
+            console.log("exception",exception)
+        }
+    }
+
     useEffect(()=>{
-        handleFunction()
+        MenuHomeList()
     },[])
     return(
         <>

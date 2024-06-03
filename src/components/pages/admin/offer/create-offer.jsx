@@ -10,11 +10,14 @@ import MenuSvc from "../menu/menu-service"
 import * as Yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { MenuSelectorComponent } from "../offer-menu"
+import OfferSvc from "./offer-service"
+import { useNavigate } from "react-router-dom"
 
 
 
 const CreateOffer = () => {
 
+    const navigate=useNavigate()
 
     const [menuList, setMenuList] = useState()
     let [menuOffer, setMenuOffer] = useState(null)
@@ -37,7 +40,7 @@ const CreateOffer = () => {
 
 
     const { control, handleSubmit, formState: { errors } } = useForm({
-        // resolver: yupResolver(rules)
+        resolver: yupResolver(rules)
     })
 
     const FetchMenuList = async () => {
@@ -64,11 +67,11 @@ const CreateOffer = () => {
 
     const submitOffer = async (data) => {
         try {
-            console.log("data",data)
-            // console.log("data", data.menu)
-
-            // const menuIds = data.menu.map(item => item.menuId.value);
-            // console.log("menuIds", menuIds)
+            data.menu=menuOffer
+            const response=await OfferSvc.createOffer(data)
+            // console.log("response",response)
+            toast.success(response.message)
+            navigate('/admin/offer')
         }
         catch (exception) {
             toast.warn(exception.message)
