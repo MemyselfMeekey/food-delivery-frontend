@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import "./hom-header.css"
 import AuthSvc from "../../auth/auth.service";
 import CategorySvc from "../../admin/category/category.service";
+import OrderSvc from "../../admin/order/order-service";
 
 const HomeHeader = () => {
   const nav = useNavigate();
@@ -59,8 +60,31 @@ const HomeHeader = () => {
     }
   }
 
+  const [quantity,setquantity]=useState()
+
+  const LoadQuantity=async()=>{
+    try{
+      const response=await OrderSvc.getMyCart()
+      let number=0
+      console.log(response.result[0].quantity)
+      if(response.result){
+        setquantity(response.result[0].quantity)
+      }
+      else{
+        setquantity(number)
+      }
+    }
+    catch(exception){
+      toast.warn(exception.message)
+      console.log("exception",exception)
+    }
+  }
+  
+  console.log("quantity",quantity)
+
   useEffect(()=>{
-    LoadCategories()
+    LoadCategories(),
+    LoadQuantity()
   },[])
 
   return (
@@ -77,7 +101,7 @@ const HomeHeader = () => {
           <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">Home</a>
+                <a className="nav-link active" aria-current="page" href="/">Home</a>
               </li>
               <li className="nav-item dropdown">
                 <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
@@ -89,12 +113,6 @@ const HomeHeader = () => {
                   }
                 </ul>
               </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">About Us</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Contact Us</a>
-              </li>
             </ul>
 
             <ul className="navbar-nav">
@@ -103,9 +121,12 @@ const HomeHeader = () => {
                 loggedInUser ? <>
 
                 <li className="nav-item">
-                <a className="nav-link active btn btn-sm btn-outline-success mx-2"  aria-current="page" href={`/${loggedInUser.role}`}><i class="fa-solid fa-user"></i> {loggedInUser.name}</a>
+                <a className="nav-link mx-2"  aria-current="page"  href={loggedInUser.role === 'admin' ? `/${loggedInUser.role}` : "/"}><i class="fa-solid fa-user"></i> {loggedInUser.name}</a>
                 </li>
-
+                <li className="nav-item">
+                <NavLink className="btn btn-warning mx-2" to="/customer/cart" ><i class="fa-solid fa-cart-shopping" ></i>Cart <sup style={{color:"blue"}}>{quantity}</sup></NavLink>
+                </li>
+               
                 </> : <>
                   <li className="nav-item">
                     <NavLink className={"btn btn-sm btn-outline-success mx-2"} to="/register">Register</NavLink>
@@ -178,6 +199,10 @@ const HomeHeader = () => {
               <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
               <button className="btn btn-outline-success" type="submit" style={{ color: "black" }}>Search</button>
             </form>
+          
+                  <Button className="mx-2" style={{background:"none",border:"none"}}><i class="fa-solid fa-right-from-bracket"></i>Logout</Button>
+                  
+
           </div>
         </div>
       </nav>

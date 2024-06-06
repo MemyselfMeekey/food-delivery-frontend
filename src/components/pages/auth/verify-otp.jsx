@@ -25,7 +25,7 @@ const VerifyOtp = () => {
           
             const response = await AuthSvc.otpRequest(newData)
             toast.success(response.message)
-            navigate("/"+response.result.userDetail.role)
+            navigate("/"+response.result.userDetail.role==='admin'?'admin':'/')
 
         }
         catch (exception) {

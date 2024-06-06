@@ -59,8 +59,7 @@ const AuthComponent=({role,children})=>{
     }
     else{
         toast.warn("You donot have permission to this panel")
-        console.log(userDetail.role)
-        return <Navigate to={'/'+userDetail.role}></Navigate>
+        return <Navigate to={'/'+userDetail.role==='customer'?"/":userDetail.role}></Navigate>
     }
 
     

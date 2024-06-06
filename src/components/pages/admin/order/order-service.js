@@ -16,6 +16,20 @@ class OrderService extends HttpServer {
         }
     }
 
+    createOrder=async(data)=>{
+        try{
+            const response=await this.postRequest(
+                'cart/order',
+                data,
+                {auth:true}
+            )
+            return response
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+
     getOrderList = async () => {
         try {
             const response = await this.getRequest(
@@ -30,8 +44,13 @@ class OrderService extends HttpServer {
         }
     }
 
-    getOrderById=async(id)=>{
+    getMyCart=async()=>{
         try{
+            const response=await this.getRequest(
+                'cart/list',
+                {auth:true}
+            )
+            return response
             
         }
         catch(exception){

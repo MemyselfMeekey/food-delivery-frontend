@@ -33,7 +33,7 @@ export const TextAreaInput = ({ name, defaultValue = "", id = "text", required =
 
 
 
-export const TextInput = ({ type = 'text', name, defaultValue = "", id = "text", required = false, placeholder = "Enter your text", errMsg = "", control, maxLength, }) => {
+export const TextInput = ({ type = 'text', name, defaultValue = "", id = "text", required = false, placeholder = "Enter your text", errMsg = "", control, maxLength,readOnly=false}) => {
     const { field } = useController({
         control: control,
         name: name,
@@ -45,6 +45,7 @@ export const TextInput = ({ type = 'text', name, defaultValue = "", id = "text",
                 type={type}
                 className="my-2"
                 size="sm"
+                readOnly={readOnly}
                 required={required}
                 id={id}
                 {...field}
@@ -116,11 +117,11 @@ export const PassInput = ({ type = 'password', name, defaultValue = "", id = "pa
     )
 }
 
-export const SelectionButton=({name,id="select",options=[],errMsg=null,control,multiple=false})=>{
+export const SelectionButton=({name,id="select",options=[],errMsg=null,control,multiple=false,placeholder="Select"})=>{
     const {field}=useController({
         name:name,
         control:control,
-     
+      
     })
     return(
         <>
@@ -130,6 +131,7 @@ export const SelectionButton=({name,id="select",options=[],errMsg=null,control,m
             // isClearable={true}
             isClearable={true}
             id={id}
+            placeholder={placeholder}
             isMulti={multiple}
         />
         <span className="text-danger">
